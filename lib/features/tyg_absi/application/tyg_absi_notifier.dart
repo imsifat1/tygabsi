@@ -1,10 +1,11 @@
-// lib/features/tyg_absi/application/tyg_absi_notifier.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart' as rp;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart' as rp;
 
 import '../domain/models.dart';
 import '../domain/conversions.dart';
 import '../domain/calculations.dart';
+import '../domain/risk.dart';
 
 class TygAbsiNotifier extends rp.StateNotifier<Measurements> {
   TygAbsiNotifier() : super(const Measurements());
@@ -78,4 +79,14 @@ final resultProvider = rp.Provider<CalcResult>((ref) {
   } catch (e) {
     return CalcResult(error: 'Calculation error: ${e.toString()}');
   }
+});
+
+final riskProvider = Provider<RiskAssessment?>((ref) {
+  final r = ref.watch(resultProvider);
+  if (r.error != null || r.tygAbsi == null) return null;
+  return assessRisk(
+    tygAbsi: r.tygAbsi!,
+    tygIndex: r.tygIndex,
+    absi: r.absi,
+  );
 });

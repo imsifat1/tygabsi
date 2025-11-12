@@ -96,6 +96,11 @@ class _BigNumber extends StatelessWidget {
             const SizedBox(height: 4),
             Text(subtitle!, style: textTheme.bodySmall),
           ],
+          const SizedBox(height: 8),
+          Text(
+            'Risk bands (overall): <0.65 low · 0.65–0.70 borderline · 0.70–0.76 elevated · ≥0.76 high.',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
         ],
       ),
     );
