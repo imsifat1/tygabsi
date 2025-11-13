@@ -1,24 +1,24 @@
-# .github/workflows/flutter-web-deploy.yml
-name: Deploy Flutter Web to GitHub Pages
+name: Deploy Flutter Web (Pages)
 
 on:
   push:
     branches: [ main ]
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
-  build-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      # Install a recent Flutter that includes Dart >= 3.9
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.27.0'   # or newer stable that your project supports
-          channel: 'stable'
+          flutter-version: '3.27.0'
+          channel: stable
 
       - name: Show versions
         run: |
@@ -32,14 +32,22 @@ jobs:
         run: flutter pub get
 
       - name: Build web
-        run: flutter build web --release --web-renderer html --base-href /tygabsi/
+        run: flutter build web --release --web-renderer html --base-href /${{ github.event.repository.name }}/
 
       - name: SPA 404 fallback
         run: cp build/web/index.html build/web/404.html
 
-      - name: Deploy to gh-pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: build/web
-          publish_branch: gh-pages
+          path: build/web
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
