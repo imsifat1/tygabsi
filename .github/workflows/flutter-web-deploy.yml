@@ -17,8 +17,8 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.27.0'
-          channel: stable
+          # Use the latest stable Flutter SDK (bundles a recent Dart SDK >= 3.9.x)
+          flutter-version: 'stable'
 
       - name: Show versions
         run: |
