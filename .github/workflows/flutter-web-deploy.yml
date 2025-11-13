@@ -17,8 +17,11 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          # Use the latest stable Flutter SDK (bundles a recent Dart SDK >= 3.9.x)
-          flutter-version: 'stable'
+          # Use the latest available Flutter SDK release so the action can resolve a concrete version
+          # 'latest' tells the action to pick the most recent stable release. Use lowercase architecture.
+          flutter-version: 'latest'
+          architecture: 'x64'
+          cache: true
 
       - name: Show versions
         run: |
